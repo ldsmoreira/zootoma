@@ -21,8 +21,10 @@ func main() {
 	// fmt.Println(p.Child[0].Way)
 
 	mapper := path.NewPathMap()
-	p := path.NewPath("/home/lucas/data.dat", mapper)
+	p := path.NewPath("/home/lucas/Desktop/toma/data.dat", mapper)
 
 	fmt.Println((*(*mapper).Pathmap[p.Way]).Way)
 	p.ShowPath()
+	p.Data.Content = []byte("blablabla")
+	p.Backup()
 }

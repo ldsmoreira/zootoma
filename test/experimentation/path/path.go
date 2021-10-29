@@ -2,8 +2,15 @@ package path
 
 import (
 	"fmt"
+	"os"
 	"tomabase/test/experimentation/datacarrier"
 )
+
+func check(e error) {
+	if e != nil {
+		panic(e)
+	}
+}
 
 type Path struct {
 	Data   datacarrier.Data
@@ -33,4 +40,12 @@ func NewPath(path string, mapper *PathMap) *Path {
 
 func (path Path) ShowPath() {
 	fmt.Println(path.Way)
+}
+
+func (path Path) Backup() {
+	fd, err := os.Create(path.Way)
+	check(err)
+	defer fd.Close()
+
+	fd.Write(path.Data.Content)
 }
