@@ -1,0 +1,4 @@
+set                             (4 bytes)
+path:/home/lucas/data           (512 bytes)
+data_size:24                    (512 bytes)
+data: ####testetesteteste####   (data_size bytes)

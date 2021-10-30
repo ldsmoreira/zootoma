@@ -38,7 +38,7 @@ func main() {
 }
 
 func handleConnection(conn net.Conn) {
-	buffer, err := bufio.NewReader(conn).ReadBytes('\n')
+	buffer, err := bufio.NewReader(conn).ReadBytes(0)
 
 	if err != nil {
 		fmt.Println("Client left.")
