@@ -6,6 +6,7 @@ import (
 	"log"
 	"net"
 	"os"
+	dxp "tomabase/test/experimentation/protocol"
 )
 
 const (
@@ -13,6 +14,12 @@ const (
 	connPort = "9000"
 	connType = "tcp"
 )
+
+func check(e error) {
+	if e != nil {
+		panic(e)
+	}
+}
 
 func main() {
 	fmt.Println("Starting " + connType + " server on " + connHost + ":" + connPort)
@@ -33,8 +40,32 @@ func main() {
 
 		fmt.Println("Client " + c.RemoteAddr().String() + " connected.")
 
-		go handleConnection(c)
+		go handleDXPConnection(c)
 	}
+}
+
+func handleDXPConnection(conn net.Conn) {
+
+	method, path, data_size := make([]byte, 3), make([]byte, 30), make([]byte, 30)
+	// var data []byte
+
+	_, err := conn.Read(method)
+	check(err)
+	_, err = conn.Read(path)
+	check(err)
+	_, err = conn.Read(data_size)
+	check(err)
+
+	dxp_obj := dxp.NewDxpProtocolMapping(method, path, data_size)
+	data := make([]byte, dxp_obj.Data_size)
+
+	_, err = conn.Read(data)
+	dxp_obj.Data = data
+
+	fmt.Println(dxp_obj)
+
+	conn.Write(data_size)
+
 }
 
 func handleConnection(conn net.Conn) {
