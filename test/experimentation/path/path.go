@@ -3,7 +3,7 @@ package path
 import (
 	"fmt"
 	"os"
-	"tomabase/test/experimentation/datacarrier"
+	"zootoma/test/experimentation/datacarrier"
 )
 
 func check(e error) {

@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"tomabase/test/experimentation/path"
+	"zootomas/test/experimentation/path"
 )
 
 func main() {

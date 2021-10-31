@@ -1,18 +1,10 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
-	"log"
 	"net"
 	"os"
-	dxp "zootoma/test/experimentation/protocol"
-)
-
-const (
-	connHost = "localhost"
-	connPort = "9000"
-	connType = "tcp"
+	dxp "zootoma/internals/protocol"
 )
 
 func check(e error) {
@@ -21,9 +13,10 @@ func check(e error) {
 	}
 }
 
-func main() {
-	fmt.Println("Starting " + connType + " server on " + connHost + ":" + connPort)
-	l, err := net.Listen(connType, connHost+":"+connPort)
+func StartMaestroServer(host string, port string, conn_type string) {
+
+	fmt.Println("Starting " + conn_type + " server on " + host + ":" + port)
+	l, err := net.Listen(conn_type, host+":"+port)
 	if err != nil {
 		fmt.Println("Error listening:", err.Error())
 		os.Exit(1)
@@ -31,23 +24,22 @@ func main() {
 	defer l.Close()
 
 	for {
-		c, err := l.Accept()
+		conn, err := l.Accept()
 		if err != nil {
 			fmt.Println("Error connecting:", err.Error())
 			return
 		}
 		fmt.Println("Client connected.")
 
-		fmt.Println("Client " + c.RemoteAddr().String() + " connected.")
+		fmt.Println("Client " + conn.RemoteAddr().String() + " connected.")
 
-		go handleDXPConnection(c)
+		go handleDXPConnection(conn)
 	}
 }
 
 func handleDXPConnection(conn net.Conn) {
 
 	method, path, data_size := make([]byte, 3), make([]byte, 30), make([]byte, 30)
-	// var data []byte
 
 	_, err := conn.Read(method)
 	check(err)
@@ -66,20 +58,4 @@ func handleDXPConnection(conn net.Conn) {
 
 	conn.Write(data_size)
 
-}
-
-func handleConnection(conn net.Conn) {
-	buffer, err := bufio.NewReader(conn).ReadBytes(0)
-
-	if err != nil {
-		fmt.Println("Client left.")
-		conn.Close()
-		return
-	}
-
-	log.Println("Client message:", string(buffer[:len(buffer)-1]))
-
-	conn.Write(buffer)
-
-	handleConnection(conn)
 }
