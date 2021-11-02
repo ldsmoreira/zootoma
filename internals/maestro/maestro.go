@@ -1,11 +1,15 @@
-package main
+package maestro
 
 import (
 	"fmt"
 	"net"
 	"os"
+	"reflect"
+	"zootoma/internals/memdata"
 	dxp "zootoma/internals/protocol"
 )
+
+var memmap *memdata.PathMap = memdata.NewPathMap()
 
 func check(e error) {
 	if e != nil {
@@ -54,7 +58,12 @@ func handleDXPConnection(conn net.Conn) {
 	_, err = conn.Read(data)
 	dxp_obj.Data = data
 
-	fmt.Println(dxp_obj)
+	switch {
+	case reflect.DeepEqual(method, []byte(dxp.SET)):
+		dxp_obj.PutDataInMemory(*memmap)
+	}
+
+	fmt.Println(memmap)
 
 	conn.Write(data_size)
 
