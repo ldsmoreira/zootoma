@@ -6,13 +6,15 @@ import (
 )
 
 func check(e error) {
+
 	if e != nil {
 		panic(e)
 	}
+
 }
 
 type MemPath struct {
-	Data Data
+	Data []byte
 	Path string
 }
 
@@ -25,24 +27,39 @@ func NewPathMap() *PathMap {
 	pathmap := new(PathMap)
 	pathmap.Pathmap = make(map[string]*MemPath)
 	return pathmap
+
+}
+
+func (pathmap PathMap) GetMemPath(path string) *MemPath {
+	return pathmap.Pathmap[path]
+}
+
+func (pathmap PathMap) SetMemPath(path string) *MemPath {
+	p := new(MemPath)
+	p.Path = path
+	pathmap.Pathmap[p.Path] = p
+	return p
 }
 
 func NewPath(path string, mapper *PathMap) *MemPath {
-	p := new(MemPath)
-	p.Path = path
-	mapper.Pathmap[p.Path] = p
-	return p
+
+	newpath := mapper.SetMemPath(path)
+	return newpath
 
 }
 
 func (path MemPath) ShowPath() {
+
 	fmt.Println(path.Path)
+
 }
 
 func (path MemPath) Backup() {
+
 	fd, err := os.Create(path.Path)
 	check(err)
 	defer fd.Close()
 
-	fd.Write(path.Data.Content)
+	fd.Write(path.Data)
+
 }

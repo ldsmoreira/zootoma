@@ -4,6 +4,12 @@ import (
 	"bytes"
 	"fmt"
 	"strconv"
+	"zootoma/internals/memdata"
+)
+
+const (
+	GET string = "get"
+	SET string = "set"
 )
 
 type DxpProtocolMapping struct {
@@ -30,4 +36,9 @@ func NewDxpProtocolMapping(method []byte, path []byte, data_size []byte) *DxpPro
 	parsed_data_size = parsed_data_size[:bytes.Index(parsed_data_size, []byte{0})]
 	dxp.Data_size = byteSliceToInt(parsed_data_size)
 	return dxp
+}
+
+func (dxp DxpProtocolMapping) PutDataInMemory(pathmap memdata.PathMap) {
+	mempath := pathmap.SetMemPath(string(dxp.Path))
+	mempath.Data = dxp.Data
 }
