@@ -15,5 +15,5 @@ type Request struct {
 	Method   string
 	Key      string
 	DataSize int
-	Headers  []byte
+	Headers  map[string][]byte
 }

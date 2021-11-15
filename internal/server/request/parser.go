@@ -3,6 +3,7 @@ package request
 import (
 	"bytes"
 	"errors"
+	"fmt"
 	"strconv"
 	"zootoma/internal/server/protocol"
 )
@@ -25,7 +26,7 @@ type Parser struct {
 
 // The getMainHeader method of the Parser struct is responsible to parse and
 // validate the first line of the raw request
-func (p Parser) getMainHeader(mh []byte) (req *Request, err error) {
+func (p Parser) GetMainHeader(mh []byte) (req *Request, err error) {
 
 	var (
 		isValidMethod bool
@@ -41,9 +42,13 @@ func (p Parser) getMainHeader(mh []byte) (req *Request, err error) {
 
 	method, key, size := sl[0], sl[1], sl[2]
 
+	fmt.Println(string(method), string(key), string(size))
+
 	isValidMethod = protocol.IsValidMethod(bytes.ToLower(method))
 	isValidKey = protocol.IsValidKey(key)
 	isValidSize = protocol.IsValidSize(size)
+
+	fmt.Println(isValidMethod, isValidKey, isValidSize)
 
 	if isValidMethod && isValidKey && isValidSize {
 		p.Request.Method = string(method)
@@ -57,6 +62,13 @@ func (p Parser) getMainHeader(mh []byte) (req *Request, err error) {
 
 }
 
-func (p Parser) isValidMinorHeader() {
+func (p Parser) GetMetaHeader(mh []byte) (req *Request, err error) {
+	key, value, valid := protocol.IsValidMetaHeader(mh)
 
+	if valid {
+		p.Request.Headers[string(key)] = value
+		return p.Request, nil
+	} else {
+		return p.Request, errors.New("Invalid MetaHeader")
+	}
 }
