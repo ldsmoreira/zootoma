@@ -15,6 +15,8 @@ const (
 	MethodGet string = "get"
 )
 
+var MainHeaderSeparator []byte = []byte(" ")
+
 // Private mapping of possible methods
 var methods = map[string]bool{
 	"set": true,

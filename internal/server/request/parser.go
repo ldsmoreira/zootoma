@@ -2,7 +2,8 @@ package request
 
 import (
 	"bytes"
-	"net"
+	"errors"
+	"strconv"
 	"zootoma/internal/server/protocol"
 )
 
@@ -19,10 +20,12 @@ import (
 // (every data that fits 30000 bytes)
 
 type Parser struct {
-	conn *net.Conn
+	Request *Request
 }
 
-func isValidMainHeader(mh []byte) bool {
+// The getMainHeader method of the Parser struct is responsible to parse and
+// validate the first line of the raw request
+func (p Parser) getMainHeader(mh []byte) (req *Request, err error) {
 
 	var (
 		isValidMethod bool
@@ -30,10 +33,10 @@ func isValidMainHeader(mh []byte) bool {
 		isValidSize   bool
 	)
 
-	sl := bytes.Split(mh, []byte(" "))
+	sl := bytes.Split(mh, protocol.MainHeaderSeparator)
 
 	if len(sl) != protocol.MainHeaderCompQtt {
-		return false
+		return nil, errors.New("Main header line malformatted or corrupted")
 	}
 
 	method, key, size := sl[0], sl[1], sl[2]
@@ -42,6 +45,18 @@ func isValidMainHeader(mh []byte) bool {
 	isValidKey = protocol.IsValidKey(key)
 	isValidSize = protocol.IsValidSize(size)
 
-	return (isValidMethod && isValidKey && isValidSize)
+	if isValidMethod && isValidKey && isValidSize {
+		p.Request.Method = string(method)
+		p.Request.Key = string(key)
+		p.Request.DataSize, _ = strconv.Atoi(string(size))
+
+		return p.Request, nil
+	} else {
+		return nil, errors.New("Invalid main header options")
+	}
+
+}
+
+func (p Parser) isValidMinorHeader() {
 
 }

@@ -14,6 +14,6 @@ package request
 type Request struct {
 	Method   string
 	Key      string
-	DataSize int64
+	DataSize int
 	Headers  []byte
 }
