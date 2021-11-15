@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"strconv"
+	"zootoma/internal/core"
 	"zootoma/internal/server/protocol"
 )
 
@@ -22,11 +22,24 @@ import (
 
 type Parser struct {
 	Request *Request
+	Action  *action.Action
+}
+
+func (p Parser) SetRawMainHeader(mainHeader []byte) {
+	p.Request.MainHeader = mainHeader
+}
+
+func (p Parser) SetRawMetaHeader(metaHeader []byte) {
+	p.Request.MetaHeader = append(p.Request.MetaHeader, metaHeader)
+}
+
+func (p Parser) SetActionData(data []byte) {
+	p.Action.Data = data
 }
 
 // The getMainHeader method of the Parser struct is responsible to parse and
 // validate the first line of the raw request
-func (p Parser) GetMainHeader(mh []byte) (req *Request, err error) {
+func (p Parser) ParseMainHeader() (err error) {
 
 	var (
 		isValidMethod bool
@@ -34,10 +47,14 @@ func (p Parser) GetMainHeader(mh []byte) (req *Request, err error) {
 		isValidSize   bool
 	)
 
-	sl := bytes.Split(mh, protocol.MainHeaderSeparator)
+	if p.Request.MainHeader == nil {
+		return errors.New("Main header is null")
+	}
+
+	sl := bytes.Split(p.Request.MainHeader, protocol.MainHeaderSeparator)
 
 	if len(sl) != protocol.MainHeaderCompQtt {
-		return nil, errors.New("Main header line malformatted or corrupted")
+		return errors.New("Main header line malformatted or corrupted")
 	}
 
 	method, key, size := sl[0], sl[1], sl[2]
@@ -51,24 +68,41 @@ func (p Parser) GetMainHeader(mh []byte) (req *Request, err error) {
 	fmt.Println(isValidMethod, isValidKey, isValidSize)
 
 	if isValidMethod && isValidKey && isValidSize {
-		p.Request.Method = string(method)
-		p.Request.Key = string(key)
-		p.Request.DataSize, _ = strconv.Atoi(string(size))
-
-		return p.Request, nil
+		p.Action.Method = string(method)
+		p.Action.Key = string(key)
+		return nil
 	} else {
-		return nil, errors.New("Invalid main header options")
+		return errors.New("Invalid main header options")
 	}
-
 }
 
-func (p Parser) GetMetaHeader(mh []byte) (req *Request, err error) {
-	key, value, valid := protocol.IsValidMetaHeader(mh)
+func (p Parser) ParseMetaHeader() (err error) {
+	err = nil
+	for _, value := range p.Request.MetaHeader {
+		key, value, valid := protocol.IsValidMetaHeader(value)
+		if valid {
+			p.Action.Headers[string(key)] = value
+		} else {
+			err = errors.New("Invalid MetaHeader")
+		}
+	}
+	return err
+}
 
-	if valid {
-		p.Request.Headers[string(key)] = value
-		return p.Request, nil
-	} else {
-		return p.Request, errors.New("Invalid MetaHeader")
+func (p Parser) BuildAction(request []byte, requestIndex int) (err error) {
+	switch requestIndex {
+	case 0:
+		p.SetRawMainHeader(request)
+		err = p.ParseMainHeader()
+		return err
+	case 1:
+		p.SetRawMetaHeader(request)
+		err = p.ParseMetaHeader()
+		return err
+	case 2:
+		p.SetActionData(request)
+		return nil
+	default:
+		return errors.New("Wrong format for request !!")
 	}
 }

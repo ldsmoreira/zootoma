@@ -1,18 +1,19 @@
-package request
+package action
 
 // The request module implements the Request structure and it's methods
 
 // Example of a valid request:
 
-// set /home/lucas/data.txt 30000
+// set or get
 //
 // status::ok
 // host::com.toma
 //
 // (every data that fits 30000 bytes)
 
-type Request struct {
-	MainHeader []byte
-	MetaHeader [][]byte
-	Data []byte
+type Action struct {
+	Method   string
+	Key      string
+	Data 	 []byte
+	Headers  map[string][]byte
 }
