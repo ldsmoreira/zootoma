@@ -4,7 +4,8 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"zootoma/internal/core"
+	"strconv"
+	action "zootoma/internal/core"
 	"zootoma/internal/server/protocol"
 )
 
@@ -51,13 +52,14 @@ func (p Parser) ParseMainHeader() (err error) {
 		return errors.New("Main header is null")
 	}
 
-	sl := bytes.Split(p.Request.MainHeader, protocol.MainHeaderSeparator)
+	sl := bytes.Split(p.Request.MainHeader, protocol.MAIN_HEADER_SEPARATOR)
 
-	if len(sl) != protocol.MainHeaderCompQtt {
+	if len(sl) != protocol.MAIN_HEADER_ITEMS {
 		return errors.New("Main header line malformatted or corrupted")
 	}
 
-	method, key, size := sl[0], sl[1], sl[2]
+	method, key := sl[0], sl[1]
+	size, _ := strconv.Atoi(string(sl[2]))
 
 	fmt.Println(string(method), string(key), string(size))
 
@@ -70,6 +72,7 @@ func (p Parser) ParseMainHeader() (err error) {
 	if isValidMethod && isValidKey && isValidSize {
 		p.Action.Method = string(method)
 		p.Action.Key = string(key)
+		p.Action.DataSize = size
 		return nil
 	} else {
 		return errors.New("Invalid main header options")

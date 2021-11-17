@@ -3,14 +3,13 @@ package protocol
 import (
 	"bytes"
 	"fmt"
-	"strconv"
 )
 
 // IsValidMethod validades if the method passed
 // is a valid one
 func IsValidMethod(method []byte) bool {
 	ms := string(method)
-	if _, present := methods[ms]; present {
+	if _, present := METHODS[ms]; present {
 		return true
 	} else {
 		return false
@@ -27,11 +26,9 @@ func IsValidKey(key []byte) bool {
 // IsValidSize validades if the size bytes passed
 // are integer convertible and if it is less than
 // the maximum allowed size for data
-func IsValidSize(size []byte) bool {
-	ds, err := strconv.Atoi(string(size))
-	fmt.Println(ds <= MaxDataSize)
-	fmt.Println(err)
-	if err == nil && ds <= MaxDataSize {
+func IsValidSize(ds int) bool {
+	fmt.Println(ds <= MAX_DATA_SIZE)
+	if ds <= MAX_DATA_SIZE {
 		return true
 	} else {
 		return false
@@ -41,7 +38,7 @@ func IsValidSize(size []byte) bool {
 // IsValidMinorHeader validades if the Meta Header was constructed
 // following the protocol needs
 func IsValidMetaHeader(mh []byte) (key []byte, value []byte, valid bool) {
-	smh := bytes.SplitN(mh, MetaHeaderSeparator, 2)
+	smh := bytes.SplitN(mh, META_HEADER_SEPARATOR, 2)
 	if len(smh) != 2 {
 		return nil, nil, false
 	} else {

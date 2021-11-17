@@ -14,6 +14,7 @@ package action
 type Action struct {
 	Method   string
 	Key      string
-	Data 	 []byte
+	DataSize int
+	Data     []byte
 	Headers  map[string][]byte
 }
