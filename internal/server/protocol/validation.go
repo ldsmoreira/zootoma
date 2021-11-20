@@ -2,7 +2,6 @@ package protocol
 
 import (
 	"bytes"
-	"fmt"
 )
 
 // IsValidMethod validades if the method passed
@@ -27,7 +26,6 @@ func IsValidKey(key []byte) bool {
 // are integer convertible and if it is less than
 // the maximum allowed size for data
 func IsValidSize(ds int) bool {
-	fmt.Println(ds <= MAX_DATA_SIZE)
 	if ds <= MAX_DATA_SIZE {
 		return true
 	} else {
@@ -39,9 +37,11 @@ func IsValidSize(ds int) bool {
 // following the protocol needs
 func IsValidMetaHeader(mh []byte) (key []byte, value []byte, valid bool) {
 	smh := bytes.SplitN(mh, META_HEADER_SEPARATOR, 2)
-	if len(smh) != 2 {
+	if len(smh[0]) == 0 {
 		return nil, nil, false
 	} else {
+		key = smh[0]
+		value = smh[1]
 		return key, value, true
 	}
 }

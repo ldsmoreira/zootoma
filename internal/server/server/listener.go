@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net"
 	"os"
+	"zootoma/internal/server/request"
 )
 
 func StartListen(host string, port string, conn_type string) {
@@ -26,8 +27,8 @@ func StartListen(host string, port string, conn_type string) {
 
 		fmt.Println("Client " + conn.RemoteAddr().String() + " connected.")
 
-		std := StdHandler{conn: conn}
+		handler := request.NewHandler(&conn)
 
-		go std.handle()
+		go handler.Handle()
 	}
 }

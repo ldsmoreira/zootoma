@@ -3,7 +3,6 @@ package request
 import (
 	"bytes"
 	"errors"
-	"fmt"
 	"strconv"
 	action "zootoma/internal/core"
 	"zootoma/internal/server/protocol"
@@ -59,15 +58,11 @@ func (p Parser) ParseMainHeader() (err error) {
 	}
 
 	method, key := sl[0], sl[1]
-	size, _ := strconv.Atoi(string(sl[2]))
-
-	fmt.Println(string(method), string(key), string(size))
+	size, _ := strconv.Atoi(string(sl[2][:len(sl[2])-1]))
 
 	isValidMethod = protocol.IsValidMethod(bytes.ToLower(method))
 	isValidKey = protocol.IsValidKey(key)
 	isValidSize = protocol.IsValidSize(size)
-
-	fmt.Println(isValidMethod, isValidKey, isValidSize)
 
 	if isValidMethod && isValidKey && isValidSize {
 		p.Action.Method = string(method)
@@ -84,7 +79,7 @@ func (p Parser) ParseMetaHeader() (err error) {
 	for _, value := range p.Request.MetaHeader {
 		key, value, valid := protocol.IsValidMetaHeader(value)
 		if valid {
-			p.Action.Headers[string(key)] = value
+			p.Action.Headers[string(key)] = value[:len(value)-1]
 		} else {
 			err = errors.New("Invalid MetaHeader")
 		}
@@ -92,19 +87,27 @@ func (p Parser) ParseMetaHeader() (err error) {
 	return err
 }
 
-func (p Parser) BuildAction(request []byte, requestIndex int) (err error) {
-	switch requestIndex {
-	case 0:
-		p.SetRawMainHeader(request)
+func (p Parser) BuildAction(buffer *[]byte, block_position int) (err error) {
+
+	switch block_position {
+
+	case protocol.MAIN_HEADER_POSITION:
+
+		p.SetRawMainHeader(*buffer)
 		err = p.ParseMainHeader()
 		return err
-	case 1:
-		p.SetRawMetaHeader(request)
+
+	case protocol.META_HEADER_BLOCK_POSITION:
+
+		p.SetRawMetaHeader(*buffer)
 		err = p.ParseMetaHeader()
 		return err
-	case 2:
-		p.SetActionData(request)
+
+	case protocol.DATA_BLOCK_POSITION:
+
+		p.SetActionData(*buffer)
 		return nil
+
 	default:
 		return errors.New("Wrong format for request !!")
 	}

@@ -7,7 +7,7 @@ PORT = 9000        # The port used by the server
 
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     s.connect((HOST, PORT))
-    s.sendall(b'setpath::/bome/ulcas\0\0\0\0\0\0\0\0\0\0\0\0\0data_size::50\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0data::fasdasdasdasfafadasdaggsdgvfdsdfasfadasdasdasdasda')
+    s.sendall(b'set /home/toma 12\n\nlucas::toma\nleo::toma\narthur::toma\n\nlucasmoreira')
     data = s.recv(1024)
 
 print('Received', repr(data))
