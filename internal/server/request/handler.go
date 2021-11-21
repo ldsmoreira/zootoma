@@ -6,6 +6,7 @@ import (
 	"net"
 	action "zootoma/internal/core"
 	"zootoma/internal/server/protocol"
+	"zootoma/internal/util/logging"
 )
 
 type Handler struct {
@@ -58,5 +59,7 @@ func (h Handler) Handle() {
 	fmt.Println("Data stored in Action Structure:")
 	fmt.Println(h.Parser.Action)
 	(*h.conn).Write([]byte("Relaxou"))
+	logger := logging.NewCustomLogger()
+	logger.Log("Handle exited with success", "INFO")
 
 }
