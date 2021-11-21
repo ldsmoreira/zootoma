@@ -4,44 +4,50 @@ import (
 	"bytes"
 	"fmt"
 	"log"
+	"zootoma/internal/util/misc"
 )
 
 type CustomLogger struct {
-	buf           *bytes.Buffer
-	debugLogger   *log.Logger
-	infoLogger    *log.Logger
-	warningLogger *log.Logger
-	errorLogger   *log.Logger
-	loggerMap     map[string](*log.Logger)
+	buf       *bytes.Buffer
+	level     string
+	loggers   [4](*log.Logger)
+	loggerMap map[string](*log.Logger)
 }
 
-func NewCustomLogger() (customLogger *CustomLogger) {
+var logPriority [4]string = [4]string{"INFO", "WARNING", "ERROR", "DEBUG"}
+
+func NewCustomLogger(level string) (customLogger *CustomLogger) {
 
 	customLogger = new(CustomLogger)
 
 	customLogger.buf = new(bytes.Buffer)
 
-	flags := log.Ldate | log.Lmicroseconds | log.Lmsgprefix
-
-	customLogger.debugLogger = log.New(customLogger.buf, "DEBUG: ", flags)
-	customLogger.infoLogger = log.New(customLogger.buf, "INFO: ", flags)
-	customLogger.warningLogger = log.New(customLogger.buf, "WARNING: ", flags)
-	customLogger.errorLogger = log.New(customLogger.buf, "ERROR: ", flags)
-
 	customLogger.loggerMap = make(map[string](*log.Logger))
 
-	customLogger.loggerMap["DEBUG"] = customLogger.debugLogger
-	customLogger.loggerMap["INFO"] = customLogger.infoLogger
-	customLogger.loggerMap["WARNING"] = customLogger.warningLogger
-	customLogger.loggerMap["ERROR"] = customLogger.errorLogger
+	flags := log.Ldate | log.Lmicroseconds | log.Lmsgprefix
+
+	priority, err := misc.IndexOf(logPriority[:], level)
+	if err != nil {
+		fmt.Println("Error in logger creation, cant find log level")
+	}
+
+	for i := 0; i <= priority; {
+		_level := logPriority[i]
+		customLogger.loggers[i] = log.New(customLogger.buf, _level+": ", flags)
+		customLogger.loggerMap[_level] = customLogger.loggers[i]
+		i++
+	}
 
 	return customLogger
 
 }
 
 func (c CustomLogger) Log(msg string, level string) {
-	logger := c.loggerMap[level]
-	logger.Print(msg)
-	fmt.Print(c.buf)
-	c.buf.Reset()
+	if logger, ok := c.loggerMap[level]; ok {
+		logger.Print(msg)
+		fmt.Print(c.buf)
+		c.buf.Reset()
+	} else {
+		fmt.Println("Log level does't exist")
+	}
 }
