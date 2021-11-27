@@ -33,7 +33,6 @@ func (cl CustomLogger) log(msg string) {
 }
 
 func (cl CustomLogger) Error(msg string) {
-	fmt.Println(cl.level)
 	if cl.level >= ERROR {
 		cl.logger.SetPrefix("Error: ")
 		cl.log(msg)
@@ -41,7 +40,6 @@ func (cl CustomLogger) Error(msg string) {
 }
 
 func (cl CustomLogger) Warning(msg string) {
-	fmt.Println(cl.level)
 	if cl.level >= WARNING {
 		cl.logger.SetPrefix("Warning: ")
 		cl.log(msg)
@@ -49,7 +47,6 @@ func (cl CustomLogger) Warning(msg string) {
 }
 
 func (cl CustomLogger) Info(msg string) {
-	fmt.Println(cl.level)
 	if cl.level >= INFO {
 		cl.logger.SetPrefix("INFO: ")
 		cl.log(msg)
@@ -57,7 +54,6 @@ func (cl CustomLogger) Info(msg string) {
 }
 
 func (cl CustomLogger) Debug(msg string) {
-	fmt.Println(cl.level)
 	if DEBUG <= cl.level {
 		cl.logger.SetPrefix("DEBUG: ")
 		cl.log(msg)
