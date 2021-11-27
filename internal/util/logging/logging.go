@@ -4,50 +4,78 @@ import (
 	"bytes"
 	"fmt"
 	"log"
-	"zootoma/internal/util/misc"
+)
+
+const (
+	ERROR int = iota
+	WARNING
+	INFO
+	DEBUG
 )
 
 type CustomLogger struct {
-	buf       *bytes.Buffer
-	level     string
-	loggers   [4](*log.Logger)
-	loggerMap map[string](*log.Logger)
+	buf    *bytes.Buffer
+	logger *log.Logger
+	level  int
 }
 
-var logPriority [4]string = [4]string{"INFO", "WARNING", "ERROR", "DEBUG"}
+type ICustomLogger interface {
+	Error(msg string)
+	Warning(msg string)
+	Info(msg string)
+	Debug(msg string)
+}
 
-func NewCustomLogger(level string) (customLogger *CustomLogger) {
+func (cl CustomLogger) log(msg string) {
+	cl.logger.Print(msg)
+	fmt.Print(cl.buf)
+	cl.buf.Reset()
+}
+
+func (cl CustomLogger) Error(msg string) {
+	fmt.Println(cl.level)
+	if cl.level >= ERROR {
+		cl.logger.SetPrefix("Error: ")
+		cl.log(msg)
+	}
+}
+
+func (cl CustomLogger) Warning(msg string) {
+	fmt.Println(cl.level)
+	if cl.level >= WARNING {
+		cl.logger.SetPrefix("Warning: ")
+		cl.log(msg)
+	}
+}
+
+func (cl CustomLogger) Info(msg string) {
+	fmt.Println(cl.level)
+	if cl.level >= INFO {
+		cl.logger.SetPrefix("INFO: ")
+		cl.log(msg)
+	}
+}
+
+func (cl CustomLogger) Debug(msg string) {
+	fmt.Println(cl.level)
+	if DEBUG <= cl.level {
+		cl.logger.SetPrefix("DEBUG: ")
+		cl.log(msg)
+	}
+}
+
+func NewCustomLogger(level int) (customLogger *CustomLogger) {
 
 	customLogger = new(CustomLogger)
 
 	customLogger.buf = new(bytes.Buffer)
 
-	customLogger.loggerMap = make(map[string](*log.Logger))
+	customLogger.level = level
 
 	flags := log.Ldate | log.Lmicroseconds | log.Lmsgprefix
 
-	priority, err := misc.IndexOf(logPriority[:], level)
-	if err != nil {
-		fmt.Println("Error in logger creation, cant find log level")
-	}
-
-	for i := 0; i <= priority; {
-		_level := logPriority[i]
-		customLogger.loggers[i] = log.New(customLogger.buf, _level+": ", flags)
-		customLogger.loggerMap[_level] = customLogger.loggers[i]
-		i++
-	}
+	customLogger.logger = log.New(customLogger.buf, "", flags)
 
 	return customLogger
 
-}
-
-func (c CustomLogger) Log(msg string, level string) {
-	if logger, ok := c.loggerMap[level]; ok {
-		logger.Print(msg)
-		fmt.Print(c.buf)
-		c.buf.Reset()
-	} else {
-		fmt.Println("Log level does't exist")
-	}
 }

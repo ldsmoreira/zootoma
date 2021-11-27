@@ -59,7 +59,7 @@ func (h Handler) Handle() {
 	fmt.Println("Data stored in Action Structure:")
 	fmt.Println(h.Parser.Action)
 	(*h.conn).Write([]byte("Relaxou"))
-	logger := logging.NewCustomLogger("ERROR")
-	logger.Log("Handle exited with success", "DEBUG")
+	logger := logging.NewCustomLogger(logging.INFO)
+	logger.Debug("Handle exited with success")
 
 }
