@@ -7,6 +7,7 @@ import (
 	action "zootoma/internal/core/action"
 	"zootoma/internal/server/protocol"
 	"zootoma/internal/util/logging"
+	"zootoma/internal/core/memory/executor"
 )
 
 type Handler struct {
@@ -57,6 +58,10 @@ func (h Handler) Handle() {
 	h.Reader.Read(buffer)
 	h.Parser.BuildAction(&buffer, protocol.DATA_BLOCK_POSITION)
 	fmt.Println("Data stored in Action Structure:")
+
+	action:= h.Parser.Action
+	response, err = exec.execute(action)
+
 	fmt.Println(h.Parser.Action)
 	(*h.conn).Write([]byte("Relaxou"))
 	logger := logging.NewCustomLogger(logging.INFO)

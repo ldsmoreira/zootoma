@@ -7,3 +7,7 @@ import (
 type Executor interface {
 	ExecuteAction(action *action.Action) action.ActionResponse
 }
+
+func execute(action *action.Action) {
+	
+}
