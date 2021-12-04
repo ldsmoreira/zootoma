@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"errors"
 	"strconv"
-	action "zootoma/internal/core"
+	action "zootoma/internal/core/action"
 	"zootoma/internal/server/protocol"
 )
 
@@ -33,7 +33,7 @@ func (p Parser) SetRawMetaHeader(metaHeader []byte) {
 	p.Request.MetaHeader = append(p.Request.MetaHeader, metaHeader)
 }
 
-func (p Parser) SetActionData(data []byte) {
+func (p Parser) SetActionData(data *[]byte) {
 	p.Action.Data = data
 }
 
@@ -105,7 +105,7 @@ func (p Parser) BuildAction(buffer *[]byte, block_position int) (err error) {
 
 	case protocol.DATA_BLOCK_POSITION:
 
-		p.SetActionData(*buffer)
+		p.SetActionData(buffer)
 		return nil
 
 	default:

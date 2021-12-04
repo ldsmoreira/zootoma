@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
-	action "zootoma/internal/core"
+	action "zootoma/internal/core/action"
 	"zootoma/internal/server/protocol"
 	"zootoma/internal/server/request"
 )
@@ -31,7 +31,7 @@ func main() {
 			_, _ = reader.Read(b)
 			b = b[:len(b)-1]
 		}
-		parser.BuildAction(b, counter)
+		parser.BuildAction(&b, counter)
 		if len(b) == 0 {
 			counter++
 		}

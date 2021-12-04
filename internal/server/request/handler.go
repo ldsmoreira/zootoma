@@ -4,7 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"net"
-	action "zootoma/internal/core"
+	action "zootoma/internal/core/action"
 	"zootoma/internal/server/protocol"
 	"zootoma/internal/util/logging"
 )
@@ -60,6 +60,6 @@ func (h Handler) Handle() {
 	fmt.Println(h.Parser.Action)
 	(*h.conn).Write([]byte("Relaxou"))
 	logger := logging.NewCustomLogger(logging.INFO)
-	logger.Debug("Handle exited with success")
+	logger.Info("Handle exited with success")
 
 }

@@ -15,6 +15,13 @@ type Action struct {
 	Method   string
 	Key      string
 	DataSize int
-	Data     []byte
+	Data     *[]byte
 	Headers  map[string][]byte
+}
+
+type ActionResponse struct {
+	Method  string
+	Status  int
+	Data    *[]byte
+	Message string
 }
