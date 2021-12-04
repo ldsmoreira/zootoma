@@ -7,3 +7,7 @@ type SetExecutor struct{}
 func (_ SetExecutor) ExecuteAction(action *action.Action) action.ActionResponse {
 
 }
+
+func newSetExecutor() SetExecutor {
+	return SetExecutor{}
+}

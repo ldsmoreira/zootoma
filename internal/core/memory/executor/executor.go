@@ -8,6 +8,7 @@ type Executor interface {
 	ExecuteAction(action *action.Action) action.ActionResponse
 }
 
-func execute(action *action.Action) {
-	
+var ExecutorMap map[string]interface{} = map[string]interface{}{
+	"set": newSetExecutor,
+	"get": newGetExecutor,
 }
