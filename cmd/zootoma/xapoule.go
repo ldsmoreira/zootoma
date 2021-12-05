@@ -18,16 +18,16 @@
 // 		fmt.Println("After :", text, age)
 // 	}
 // }
-package main
+// package main
 
-import (
-	"fmt"
-	"zootoma/internal/core/action"
-	"zootoma/internal/core/memory/executor"
-)
+// import (
+// 	"fmt"
+// 	"zootoma/internal/core/action"
+// 	"zootoma/internal/core/memory/executor"
+// )
 
-func main() {
-	actn:= action.Action{Method: "get", DataSize: 9000, Data: nil, Key: "Toma"}
-	resp:= executor.Execute(&actn)
-	fmt.Println(resp)
-}
+// func main() {
+// 	actn:= action.Action{Method: "get", DataSize: 9000, Data: nil, Key: "Toma"}
+// 	resp:= executor.Execute(&actn)
+// 	fmt.Println(resp)
+// }

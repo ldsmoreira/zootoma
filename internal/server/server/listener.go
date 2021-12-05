@@ -1,18 +1,22 @@
 package server
 
 import (
-	"fmt"
 	"net"
 	"os"
 	"zootoma/internal/server/request"
+	"zootoma/internal/util/logging"
 )
 
+var listener_logger *logging.CustomLogger = logging.NewCustomLogger(logging.INFO)
+
+//StartListen is the network layer entry point of the application
+//It's start listening
 func StartListen(host string, port string, conn_type string) {
 
-	fmt.Println("Starting " + conn_type + " server on " + host + ":" + port)
+	listener_logger.Info("Zootoma runnig on " + host + ":" + port)
 	l, err := net.Listen(conn_type, host+":"+port)
 	if err != nil {
-		fmt.Println("Error listening:", err.Error())
+		listener_logger.Error("Error listening:" + string(err.Error()))
 		os.Exit(1)
 	}
 	defer l.Close()
@@ -20,12 +24,12 @@ func StartListen(host string, port string, conn_type string) {
 	for {
 		conn, err := l.Accept()
 		if err != nil {
-			fmt.Println("Error connecting:", err.Error())
+			listener_logger.Info("Error connecting:" + string(err.Error()))
 			return
 		}
-		fmt.Println("Client connected.")
+		listener_logger.Info("Client connected.")
 
-		fmt.Println("Client " + conn.RemoteAddr().String() + " connected.")
+		listener_logger.Info("Client " + conn.RemoteAddr().String() + " connected.")
 
 		handler := request.NewHandler(&conn)
 

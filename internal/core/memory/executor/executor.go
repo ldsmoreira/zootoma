@@ -1,21 +1,32 @@
 package executor
 
 import (
-	"fmt"
 	"zootoma/internal/core/action"
 )
 
+//Executor interface is part of Strategy Desing pattern
+//to abstract how each method acts in memory related
+//workloads
 type Executor interface {
 	ExecuteAction(action *action.Action) action.ActionResponse
 }
 
-var ExecutorMap map[string]Executor = map[string]Executor{
-	"set": newSetExecutor(),
-	"get": newGetExecutor(),
+//ExecutorMap is a global map relating methods to its executor constructors
+var ExecutorMap map[string]func() Executor = map[string]func() Executor{
+
+	"set": newSetExecutor,
+	"get": newGetExecutor,
 }
 
-func Execute(actn *action.Action) action.ActionResponse{
-	exec:=ExecutorMap[actn.Method].ExecuteAction(actn)
-	fmt.Print(exec)
-	return action.ActionResponse{Status: exec.Status, Method: exec.Method, Data: exec.Data, Message: exec.Message}
+//Execute a given action based on the operation that method represents
+func Execute(actn *action.Action) (ar action.ActionResponse) {
+
+	executor := ExecutorMap[actn.Method]()
+	ar = executor.ExecuteAction(actn)
+
+	return action.ActionResponse{
+		Status:  ar.Status,
+		Method:  ar.Method,
+		Data:    ar.Data,
+		Message: ar.Message}
 }
