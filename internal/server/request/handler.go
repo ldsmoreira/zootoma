@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net"
 	action "zootoma/internal/core/action"
+	"zootoma/internal/core/memory/executor"
 	"zootoma/internal/server/protocol"
 	"zootoma/internal/util/logging"
 )
@@ -58,7 +59,9 @@ func (h Handler) Handle() {
 	h.Parser.BuildAction(&buffer, protocol.DATA_BLOCK_POSITION)
 	fmt.Println("Data stored in Action Structure:")
 
-	// action:= h.Parser.Action
+	action:= *h.Parser.Action
+	balb:= executor.Execute(&action)
+	fmt.Println(balb)
 	// response, err = executor.Execute(action)
 
 	fmt.Println(h.Parser.Action)
