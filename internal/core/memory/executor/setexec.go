@@ -1,11 +1,17 @@
 package executor
 
-import "zootoma/internal/core/action"
+import (
+	"zootoma/internal/core/action"
+	"zootoma/internal/core/memory/manager"
+	"zootoma/internal/core/memory/memorydata"
+)
 
 type SetExecutor struct{}
 
-func (_ SetExecutor) ExecuteAction(action *action.Action) action.ActionResponse {
-
+func (se SetExecutor) ExecuteAction(actn *action.Action) action.ActionResponse {
+	memoryData := memorydata.MemoryData{Key: actn.Key, Data: actn.Data, Size: actn.DataSize}
+	manager.GblNodeManager.MemoryStorageMap[actn.Key] = &memoryData
+	return action.ActionResponse{Status: 0}
 }
 
 func newSetExecutor() SetExecutor {

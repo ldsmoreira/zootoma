@@ -24,4 +24,6 @@ type ActionResponse struct {
 	Status  int
 	Data    *[]byte
 	Message string
+	Key 	string
+	Size	int
 }
