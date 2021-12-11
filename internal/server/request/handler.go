@@ -2,6 +2,7 @@ package request
 
 import (
 	"bufio"
+	"encoding/json"
 	"net"
 
 	action "github.com/moreira0102/zootoma/internal/core/action"
@@ -60,8 +61,10 @@ func (h Handler) Handle() {
 	action := *h.Parser.Action
 	actionresp := executor.Execute(&action)
 	if actionresp.Data != nil {
-		(*h.conn).Write([]byte(*actionresp.Data))
+		resp, _ := json.Marshal(actionresp)
+		(*h.conn).Write(resp)
 	} else {
-		(*h.conn).Write([]byte(actionresp.Message))
+		resp, _ := json.Marshal(actionresp)
+		(*h.conn).Write(resp)
 	}
 }
