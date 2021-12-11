@@ -2,7 +2,8 @@ package manager
 
 import (
 	"sync"
-	"zootoma/internal/core/memory/memorydata"
+
+	"github.com/moreira0102/zootoma/internal/core/memory/memorydata"
 )
 
 type NodeManager struct {

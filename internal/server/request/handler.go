@@ -3,9 +3,10 @@ package request
 import (
 	"bufio"
 	"net"
-	action "zootoma/internal/core/action"
-	"zootoma/internal/core/memory/executor"
-	"zootoma/internal/server/protocol"
+
+	action "github.com/moreira0102/zootoma/internal/core/action"
+	"github.com/moreira0102/zootoma/internal/core/memory/executor"
+	"github.com/moreira0102/zootoma/internal/server/protocol"
 )
 
 type Handler struct {

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"zootoma/internal/server/server"
+	"github.com/moreira0102/zootoma/internal/server/server"
 )
 
 const (

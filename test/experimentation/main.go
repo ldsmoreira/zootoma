@@ -2,7 +2,8 @@ package main
 
 import (
 	"fmt"
-	"zootomas/test/experimentation/path"
+
+	"github.com/moreira0102/zootomas/test/experimentation/path"
 )
 
 func main() {

@@ -3,8 +3,9 @@ package server
 import (
 	"net"
 	"os"
-	"zootoma/internal/server/request"
-	"zootoma/internal/util/logging"
+
+	"github.com/moreira0102/zootoma/internal/server/request"
+	"github.com/moreira0102/zootoma/internal/util/logging"
 )
 
 var listener_logger *logging.CustomLogger = logging.NewCustomLogger(logging.INFO)

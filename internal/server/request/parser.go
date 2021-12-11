@@ -4,21 +4,13 @@ import (
 	"bytes"
 	"errors"
 	"strconv"
-	action "zootoma/internal/core/action"
-	"zootoma/internal/server/protocol"
+
+	action "github.com/moreira0102/zootoma/internal/core/action"
+	"github.com/moreira0102/zootoma/internal/server/protocol"
 )
 
 // The parser module implements the function that receives a connection object
 // and return a Request object if it is valid or return an error if it isn't
-
-// Example of a valid request:
-
-// set /home/lucas/data.txt 30000
-//
-// status::ok
-// host::com.toma
-//
-// (every data that fits 30000 bytes)
 
 type Parser struct {
 	Request *Request

@@ -1,7 +1,7 @@
 package executor
 
 import (
-	"zootoma/internal/core/action"
+	"github.com/moreira0102/zootoma/internal/core/action"
 )
 
 //Executor interface is part of Strategy Desing pattern

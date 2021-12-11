@@ -1,9 +1,9 @@
 package executor
 
 import (
-	"zootoma/internal/core/action"
-	"zootoma/internal/core/memory/manager"
-	"zootoma/internal/core/memory/memorydata"
+	"github.com/moreira0102/zootoma/internal/core/action"
+	"github.com/moreira0102/zootoma/internal/core/memory/manager"
+	"github.com/moreira0102/zootoma/internal/core/memory/memorydata"
 )
 
 //GetExecutor is an abstract struct that implements
