@@ -32,8 +32,8 @@ func StartListen(host string, port string, conn_type string) {
 
 		listener_logger.Info("Client " + conn.RemoteAddr().String() + " connected.")
 
-		handler := request.NewHandler(&conn)
+		session := request.NewSession(&conn)
 
-		go handler.Handle()
+		go session.Handle()
 	}
 }
