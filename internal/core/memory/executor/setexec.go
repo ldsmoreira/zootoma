@@ -1,6 +1,8 @@
 package executor
 
 import (
+	"encoding/json"
+
 	"github.com/moreira0102/zootoma/internal/core/action"
 	"github.com/moreira0102/zootoma/internal/core/memory/manager"
 	"github.com/moreira0102/zootoma/internal/core/memory/memorydata"
@@ -21,10 +23,15 @@ func (se SetExecutor) ExecuteAction(actn *action.Action) action.ActionResponse {
 	manager.GblNodeManager.MemoryStorageMap[actn.Key] = &memoryData
 
 	return action.ActionResponse{
-		Status:  1000,
+		Status:  0,
 		Method:  actn.Method,
 		Data:    nil,
 		Message: "Data set with success"}
+}
+
+func (se SetExecutor) ParseActionResponse(ar *action.ActionResponse) (resp []byte) {
+	resp, _ = json.Marshal(ar)
+	return resp
 }
 
 func newSetExecutor() Executor {

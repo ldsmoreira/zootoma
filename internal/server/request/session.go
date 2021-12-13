@@ -2,7 +2,6 @@ package request
 
 import (
 	"bufio"
-	"encoding/json"
 	"net"
 
 	"github.com/moreira0102/zootoma/internal/core/memory/executor"
@@ -20,7 +19,6 @@ type Session struct {
 }
 
 func NewSession(conn *net.Conn) (session Session) {
-	conn = conn
 
 	reader := bufio.NewReader(*conn)
 	writer := bufio.NewWriter(*conn)
@@ -44,7 +42,7 @@ func (s Session) handle() (conn_status bool) {
 	for offset < 2 {
 		buffer, err = s.Reader.ReadBytes(protocol.STATEMENTS_DELIMITER)
 		if err != nil {
-			session_logger.Error(err.Error())
+			session_logger.Info("Client " + (*s.conn).RemoteAddr().String() + " disconnected")
 			return false
 		}
 		if buffer[0] != protocol.STATEMENTS_DELIMITER {
@@ -59,14 +57,9 @@ func (s Session) handle() (conn_status bool) {
 	s.Handler.Parser.BuildAction(&buffer, protocol.DATA_BLOCK_POSITION)
 
 	action := *s.Handler.Parser.Action
-	actionresp := executor.Execute(&action)
-	if actionresp.Data != nil {
-		resp, _ := json.Marshal(actionresp)
-		(*s.conn).Write(resp)
-	} else {
-		resp, _ := json.Marshal(actionresp)
-		(*s.conn).Write(resp)
-	}
+	_, resp := executor.Execute(&action)
+
+	(*s.conn).Write(resp)
 
 	return true
 
@@ -74,11 +67,9 @@ func (s Session) handle() (conn_status bool) {
 
 func (s Session) Handle() {
 
-	conn_status := true
-	for conn_status {
+	for conn_status := true; conn_status; {
 		conn_status = s.handle()
 	}
 
-	session_logger.Info("Client " + (*s.conn).RemoteAddr().String() + " disconnected")
 	(*s.conn).Close()
 }

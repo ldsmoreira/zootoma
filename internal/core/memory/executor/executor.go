@@ -9,6 +9,7 @@ import (
 //workloads
 type Executor interface {
 	ExecuteAction(action *action.Action) action.ActionResponse
+	ParseActionResponse(actionresp *action.ActionResponse) (resp []byte)
 }
 
 //ExecutorMap is a global map relating methods to its executor constructors
@@ -19,14 +20,11 @@ var ExecutorMap map[string]func() Executor = map[string]func() Executor{
 }
 
 //Execute a given action based on the operation that method represents
-func Execute(actn *action.Action) (ar action.ActionResponse) {
+func Execute(actn *action.Action) (ar action.ActionResponse, resp []byte) {
 
 	executor := ExecutorMap[actn.Method]()
 	ar = executor.ExecuteAction(actn)
+	resp = executor.ParseActionResponse(&ar)
 
-	return action.ActionResponse{
-		Status:  ar.Status,
-		Method:  ar.Method,
-		Data:    ar.Data,
-		Message: ar.Message}
+	return ar, resp
 }

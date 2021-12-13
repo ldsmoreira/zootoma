@@ -24,11 +24,15 @@ func (ge GetExecutor) ExecuteAction(actn *action.Action) action.ActionResponse {
 
 	return action.ActionResponse{
 		Method:  actn.Method,
-		Status:  0,
+		Status:  -1,
 		Data:    nil,
 		Message: "Key not found",
 		Key:     actn.Key,
-		Size:    actn.DataSize}
+		Size:    -1}
+}
+
+func (ge GetExecutor) ParseActionResponse(ar *action.ActionResponse) (resp []byte) {
+	return *ar.Data
 }
 
 func newGetExecutor() Executor {
