@@ -6,7 +6,8 @@ import (
 	"log"
 	"net"
 	"os"
-	dxp "zootoma/test/experimentation/protocol"
+
+	dxp "github.com/moreira0102/zootoma/test/experimentation/protocol"
 )
 
 const (

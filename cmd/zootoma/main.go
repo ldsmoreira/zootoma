@@ -1,7 +1,7 @@
 package main
 
 import (
-	"zootoma/internals/maestro"
+	"github.com/moreira0102/zootoma/internal/server/server"
 )
 
 const (
@@ -11,5 +11,5 @@ const (
 )
 
 func main() {
-	maestro.StartMaestroServer(HOST, PORT, CONN_TYPE)
+	server.StartListen(HOST, PORT, CONN_TYPE)
 }
