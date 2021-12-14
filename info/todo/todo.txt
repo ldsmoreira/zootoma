@@ -1,3 +1,0 @@
-- Cliente
-- Master
-- Node

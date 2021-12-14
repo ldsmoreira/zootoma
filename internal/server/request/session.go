@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"encoding/binary"
 	"net"
+	"strconv"
 
 	"github.com/moreira0102/zootoma/internal/core/memory/executor"
 	"github.com/moreira0102/zootoma/internal/server/protocol"
@@ -66,6 +67,8 @@ func (s Session) handle() (conn_status bool) {
 	binary.LittleEndian.PutUint64(prefix, uint64(content_length))
 	resp = append(prefix, resp...)
 	(*s.conn).Write(resp)
+
+	session_logger.Info(strconv.Itoa(8+content_length) + " bytes sent to " + (*s.conn).RemoteAddr().String())
 
 	return true
 

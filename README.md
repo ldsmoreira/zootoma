@@ -1,7 +1,7 @@
 # Zootoma
 
 <p align="center">
-  <img src="https://i.ibb.co/7bPjgrx/zootoma-removebg-preview-Convert-Image.jpg">
+  <img src="./resources/img/zooxap.jpg">
 </p>
 
 Zootoma is the key-value in memory database that aims to implement path like data structures for data clustering, in addition to being a distributed configuration database for another clusters.
