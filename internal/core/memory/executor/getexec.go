@@ -1,6 +1,8 @@
 package executor
 
 import (
+	"encoding/json"
+
 	"github.com/moreira0102/zootoma/internal/core/action"
 	"github.com/moreira0102/zootoma/internal/core/memory/manager"
 )
@@ -32,7 +34,11 @@ func (ge GetExecutor) ExecuteAction(actn *action.Action) action.ActionResponse {
 }
 
 func (ge GetExecutor) ParseActionResponse(ar *action.ActionResponse) (resp []byte) {
-	return *ar.Data
+	if ar.Data != nil {
+		return *ar.Data
+	}
+	resp, _ = json.Marshal(ar)
+	return resp
 }
 
 func newGetExecutor() Executor {

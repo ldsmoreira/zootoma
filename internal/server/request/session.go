@@ -2,6 +2,7 @@ package request
 
 import (
 	"bufio"
+	"encoding/binary"
 	"net"
 
 	"github.com/moreira0102/zootoma/internal/core/memory/executor"
@@ -59,6 +60,11 @@ func (s Session) handle() (conn_status bool) {
 	action := *s.Handler.Parser.Action
 	_, resp := executor.Execute(&action)
 
+	content_length := len(resp)
+
+	prefix := make([]byte, 8)
+	binary.LittleEndian.PutUint64(prefix, uint64(content_length))
+	resp = append(prefix, resp...)
 	(*s.conn).Write(resp)
 
 	return true
