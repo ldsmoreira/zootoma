@@ -19,10 +19,10 @@ go build -o zootoma cmd/zootoma/main.go
 In the project root directory:
 
 ```bash
-./zootoma
+./zootoma -port=9009
 ```
 
-It will run zootoma at port 9000 of localhost
+It will run zootoma at port 9009 of localhost
 
 ## Protocol
 
