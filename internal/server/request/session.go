@@ -35,7 +35,6 @@ func NewSession(conn *net.Conn) (session Session) {
 }
 
 func (s Session) handle() (conn_status bool) {
-
 	var buffer []byte
 	var err error
 	var offset = 0
@@ -43,12 +42,15 @@ func (s Session) handle() (conn_status bool) {
 	s.Handler = NewHandler()
 	for offset < 2 {
 		buffer, err = s.Reader.ReadBytes(protocol.STATEMENTS_DELIMITER)
+
 		if err != nil {
 			session_logger.Info("Client " + (*s.conn).RemoteAddr().String() + " disconnected")
 			return false
 		}
 		if buffer[0] != protocol.STATEMENTS_DELIMITER {
 			s.Handler.Parser.BuildAction(&buffer, offset)
+		} else if buffer[0] == protocol.STATEMENTS_DELIMITER && offset == 1 {
+			offset++
 		} else {
 			offset++
 		}
