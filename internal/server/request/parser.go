@@ -70,7 +70,7 @@ func (p Parser) ParseMetaHeader() (err error) {
 	err = nil
 	for _, value := range p.Request.MetaHeader {
 		key, value, valid := protocol.IsValidMetaHeader(value)
-		if valid {
+		if valid && key != nil {
 			p.Action.Headers[string(key)] = value[:len(value)-1]
 		} else {
 			err = errors.New("Invalid MetaHeader")
